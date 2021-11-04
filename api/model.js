@@ -29,5 +29,36 @@ async function getRecipeById(recipe_id) {
         .leftJoin('step_ingredients as st_i', 's.step_id', 'st_i.step_id')
         .leftJoin('ingredients as i', 'st_i.ingredient_id', 'i.ingredient_id')
         .where('r.recipe_id', recipe_id)
-    return rows
+        .orderBy('s.step_number')
+    
+    const result = {
+        steps: []
+    }
+
+    rows.forEach(row => {
+        if (!result.recipe_id) {
+            result.recipe_id = row.recipe_id
+            result.recipe_name = row.recipe_name
+        }
+        if (row.step_id) {
+            result.steps.push({
+            step_id: row.step_id,
+            step_number: row.step_number,
+            step_instructions: row.step_instructions,
+            ingredients: [{
+                ingredient_id: row.ingredient_id,
+                ingredient_name: row.ingredient_name,
+                quantity: row.quantity
+            }]
+            })
+        }
+        //  else {
+        //     result.steps[(result.steps.length-1)].ingredients.push({
+        //         ingredient_id: row.ingredient_id,
+        //         ingredient_name: row.ingredient_name,
+        //         quantity: row.quantity
+        //     })
+        // }
+    })
+    return result
 }
