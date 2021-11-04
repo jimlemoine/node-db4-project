@@ -22,29 +22,28 @@ exports.up = function(knex) {
         table.string('ingredient_name').notNullable().unique()
         table.string('ingredient_unit')
     })
-    .createTable('recipe_ingredients', table => {
-        table.increments('recipe_ingredients_id')
-        table.integer('recipe_id')
+    .createTable('step_ingredients', table => {
+        table.increments('step_ingredients_id')
+        table.integer('step_id')
             .unsigned()
             .notNullable()
-            .references('recipe_id')
-            .inTable('recipes')
+            .references('step_id')
+            .inTable('steps')
             .onDelete('CASCADE')
             .onUpdate('CASCADE')
         table.integer('ingredient_id')
             .unsigned()
-            .notNullable()
             .references('ingredient_id')
             .inTable('ingredients')
             .onDelete('CASCADE')
             .onUpdate('CASCADE')
-        table.decimal('ingredient_quantity').notNullable()
+        table.decimal('ingredient_quantity')
     })
 };
 
 exports.down = function(knex) {
   return knex.schema
-    .dropTableIfExists('recipe_ingredients')
+    .dropTableIfExists('step_ingredients')
     .dropTableIfExists('ingredients')
     .dropTableIfExists('steps')
     .dropTableIfExists('recipes')
